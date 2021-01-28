@@ -1,0 +1,23 @@
+# 4k sequenced write test
+# fio --filename=$dev --direct=1 --rw=randrw --refill_buffers --norandommap --randrepeat=0 --ioengine=libaio 
+# --bs=4k --rwmixwrite=100 --iodepth=16 --numjobs=16 --runtime=60 --group_reporting --name=4kwrite
+
+[global]
+name=4kwrite
+filename=4kwrite
+rw=randrw
+rwmixwrite=100
+bs=4K
+direct=1
+numjobs=16
+refill_buffers=1
+norandommap=1
+randrepeat=0
+time_based=1
+runtime=60
+group_reporting=1
+
+[4kwrite-test]
+size=4G
+ioengine=libaio
+iodepth=16

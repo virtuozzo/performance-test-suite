@@ -1,0 +1,20 @@
+# random read test
+# fio --name randread --direct=1 --filename=$dev --rw=randread --size=2g  --bs=4k --ioengine=libaio --fsync=1 
+# --iodepth=8 --numjobs=32 --runtime=60 --group_reporting
+
+[global]
+name=random-read
+filename=random-read
+rw=randread
+bs=4K
+direct=1
+numjobs=32
+time_based=1
+runtime=60
+fsync=1
+group_reporting=1
+
+[random-read-test]
+size=2G
+ioengine=libaio
+iodepth=8
