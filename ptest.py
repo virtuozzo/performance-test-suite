@@ -31,6 +31,14 @@ import testutils
 import performance_test
 
 
+def compare_results(result, compare, test_name):
+    for k in result:
+        if k == "result": # skip json result from test output
+            continue
+
+        if int(result[k]) - compare[k]["val"] > compare[k]["div"]:
+            raise(Exception(f"{test_name} result {result[k]} {k} divergates from comparsion {compare[k]['val']} {k}"))
+
 def rand_read(params, logger=testutils.DEFULT_LOGGER, compare=None):
     params["rw"] = "randread"
     result = performance_test.runcustom(['', '', 'seq1', "params=%s" % json.dumps(params)], logger)
@@ -38,14 +46,9 @@ def rand_read(params, logger=testutils.DEFULT_LOGGER, compare=None):
     if hasattr(logger, 'csv'):
         logger.csv(["rand_read", int(result["read_bw"]), int(result["read_iops"]), int(result["read_lat"])])
 
-    if compare is not None:
-        for k in result:
-            if k == "result": # skip json result from test output
-                continue
 
-            if int(result[k]) - compare[k]["val"] > compare[k]["div"]:
-                raise(Exception(f"rand_read result {result[k]} divergates from comparsion {compare[k]['val']}"))
-        
+    if compare is not None:
+        compare_results(result, compare, "rand_read")
         return result
 
     if int(result["read_bw"]) < 500000:
@@ -68,13 +71,7 @@ def seq_read(params, logger=testutils.DEFULT_LOGGER, compare=None):
         logger.csv(["seq_read", int(result["read_bw"]), int(result["read_iops"]), int(result["read_lat"])])
 
     if compare is not None:
-        for k in result:
-            if k == "result":
-                continue
-
-            if int(result[k]) - compare[k]["val"] > compare[k]["div"]:
-                raise(Exception(f"rand_read result {result[k]} divergates from comparsion {compare[k]['val']}"))
-        
+        compare_results(result, compare, "seq_read")
         return result
     
     if int(result["read_bw"]) < 500000:
@@ -96,13 +93,7 @@ def rand_write(params, logger=testutils.DEFULT_LOGGER, compare=None):
         logger.csv(["rand_write","","","", int(result["write_bw"]), int(result["write_iops"]), int(result["write_lat"])])
 
     if compare is not None:
-        for k in result:
-            if k == "result":
-                continue
-
-            if int(result[k]) - compare[k]["val"] > compare[k]["div"]:
-                raise(Exception(f"rand_read result {result[k]} divergates from comparsion {compare[k]['val']}"))
-        
+        compare_results(result, compare, "rand_write")
         return result
 
     if int(result["write_bw"]) < 500000:
@@ -124,13 +115,7 @@ def seq_write(params, logger=testutils.DEFULT_LOGGER, compare=None):
         logger.csv(["seq_write","","","", int(result["write_bw"]), int(result["write_iops"]), int(result["write_lat"])])
 
     if compare is not None:
-        for k in result:
-            if k == "result":
-                continue
-
-            if int(result[k]) - compare[k]["val"] > compare[k]["div"]:
-                raise(Exception(f"rand_read result {result[k]} divergates from comparsion {compare[k]['val']}"))
-        
+        compare_results(result, compare, "seq_write")
         return result
 
     if int(result["write_bw"]) < 500000:
@@ -155,13 +140,7 @@ def rand_R70_W30(params, logger=testutils.DEFULT_LOGGER, compare=None):
             int(result["write_bw"]), int(result["write_iops"]), int(result["write_lat"])])
 
     if compare is not None:
-        for k in result:
-            if k == "result":
-                continue
-
-            if int(result[k]) - compare[k]["val"] > compare[k]["div"]:
-                raise(Exception(f"rand_read result {result[k]} divergates from comparsion {compare[k]['val']}"))
-        
+        compare_results(result, compare, "rand_R70_W30")
         return result
 
     if int(result["write_bw"]) < 150000:
@@ -195,13 +174,7 @@ def seq_R70_W30(params, logger=testutils.DEFULT_LOGGER, compare=None):
             int(result["write_bw"]), int(result["write_iops"]), int(result["write_lat"])])
 
     if compare is not None:
-        for k in result:
-            if k == "result":
-                continue
-
-            if int(result[k]) - compare[k]["val"] > compare[k]["div"]:
-                raise(Exception(f"rand_read result {result[k]} divergates from comparsion {compare[k]['val']}"))
-        
+        compare_results(result, compare, "seq_R70_W30")
         return result
     
     if int(result["write_bw"]) < 150000:
@@ -250,13 +223,7 @@ def thread_rand_read_scaling3(params, logger=testutils.DEFULT_LOGGER, compare=No
         logger.csv(["thread_rand_read_scaling3", int(result["read_bw"]), int(result["read_iops"]), int(result["read_lat"])])
 
     if compare is not None:
-        for k in result:
-            if k == "result":
-                continue
-
-            if int(result[k]) - compare[k]["val"] > compare[k]["div"]:
-                raise(Exception(f"rand_read result {result[k]} divergates from comparsion {compare[k]['val']}"))
-        
+        compare_results(result, compare, "thread_rand_read_scaling3")
         return result
 
     if int(result["read_bw"]) < 80:
@@ -280,13 +247,7 @@ def thread_rand_read_scaling30(params, logger=testutils.DEFULT_LOGGER, compare=N
         logger.csv(["thread_rand_read_scaling30", int(result["read_bw"]), int(result["read_iops"]), int(result["read_lat"])])
 
     if compare is not None:
-        for k in result:
-            if k == "result":
-                continue
-
-            if int(result[k]) - compare[k]["val"] > compare[k]["div"]:
-                raise(Exception(f"rand_read result {result[k]} divergates from comparsion {compare[k]['val']}"))
-        
+        compare_results(result, compare, "thread_rand_read_scaling30")
         return result
 
     if int(result["read_bw"]) < 180:
@@ -310,13 +271,7 @@ def thread_rand_write_scaling3(params, logger=testutils.DEFULT_LOGGER, compare=N
         logger.csv(["thread_rand_write_scaling3", "","","", int(result["write_bw"]), int(result["write_iops"]), int(result["write_lat"])])
 
     if compare is not None:
-        for k in result:
-            if k == "result":
-                continue
-
-            if int(result[k]) - compare[k]["val"] > compare[k]["div"]:
-                raise(Exception(f"rand_read result {result[k]} divergates from comparsion {compare[k]['val']}"))
-        
+        compare_results(result, compare, "thread_rand_write_scaling3")
         return result
 
     if int(result["write_bw"]) < 80:
@@ -340,13 +295,7 @@ def thread_rand_write_scaling30(params, logger=testutils.DEFULT_LOGGER, compare=
         logger.csv(["thread_rand_write_scaling30", "","","", int(result["write_bw"]), int(result["write_iops"]), int(result["write_lat"])])
 
     if compare is not None:
-        for k in result:
-            if k == "result":
-                continue
-
-            if int(result[k]) - compare[k]["val"] > compare[k]["div"]:
-                raise(Exception(f"rand_read result {result[k]} divergates from comparsion {compare[k]['val']}"))
-        
+        compare_results(result, compare, "thread_rand_write_scaling30")
         return result
 
     if int(result["write_bw"]) < 80:
@@ -373,13 +322,7 @@ def thread_rand_R70_W30_scaling3(params, logger=testutils.DEFULT_LOGGER, compare
             int(result["write_bw"]), int(result["write_iops"]), int(result["write_lat"])])
 
     if compare is not None:
-        for k in result:
-            if k == "result":
-                continue
-
-            if int(result[k]) - compare[k]["val"] > compare[k]["div"]:
-                raise(Exception(f"rand_read result {result[k]} divergates from comparsion {compare[k]['val']}"))
-        
+        compare_results(result, compare, "thread_rand_R70_W30_scaling3")
         return result
 
     if int(result["read_bw"]) < 80:
@@ -417,13 +360,7 @@ def thread_rand_R70_W30_scaling30(params, logger=testutils.DEFULT_LOGGER, compar
             int(result["write_bw"]), int(result["write_iops"]), int(result["write_lat"])])
 
     if compare is not None:
-        for k in result:
-            if k == "result":
-                continue
-
-            if int(result[k]) - compare[k]["val"] > compare[k]["div"]:
-                raise(Exception(f"rand_read result {result[k]} divergates from comparsion {compare[k]['val']}"))
-        
+        compare_results(result, compare, "thread_rand_R70_W30_scaling30")
         return result
 
     if int(result["read_bw"]) < 80:

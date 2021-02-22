@@ -358,5 +358,5 @@ cp -R storage-performance-testsuit /onappstore/
 ```
 
 ### Contributors
-18 Jan 2021 Andrii Melnyk andriy.melnyk@onapp.com   
+18 Jan 2021 Andrii Melnyk andriy.melnyk@onapp.com
 22 Jan 2021 Kateryna Bodnarchuk kateryna.bodnarchuk@onapp.com
