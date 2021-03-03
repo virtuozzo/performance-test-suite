@@ -33,11 +33,11 @@ To avoid data loss, configure tests for writing to files (-d /mnt/mountpoint/tes
 1) Ensure you have outbound internet access from your compute resource.
 2) Clone the framework repo or scp archive with all scripts to the compute resource
 ```sh
-git clone git@bitbucket.org:onappcore/storage-performance-testsuit.git
+git clone https://github.com/OnApp/performance-test-suite
 ``` 
 3) Go to tests directory
 ```sh
-cd storage-performance-testsuite/
+cd performance-test-suite/
 ```
 4) Run tests:
 ```sh
