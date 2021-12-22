@@ -37,163 +37,164 @@ def compare_results(result, compare, test_name):
             continue
 
         if int(result[k]) - compare[k]["val"] > compare[k]["div"]:
-            raise(Exception(f"{test_name} result {result[k]} {k} divergates from comparsion {compare[k]['val']} {k}"))
-
-def rand_read(params, logger=testutils.DEFULT_LOGGER, compare=None):
-    params["rw"] = "randread"
-    result = performance_test.runcustom(['', '', 'seq1', "params=%s" % json.dumps(params)], logger)
-
-    if hasattr(logger, 'csv'):
-        logger.csv(["rand_read", int(result["read_bw"]), int(result["read_iops"]), int(result["read_lat"])])
+            raise Exception(f"{test_name} result {result[k]} {k} divergates from comparsion {compare[k]['val']} {k}")
 
 
-    if compare is not None:
-        compare_results(result, compare, "rand_read")
+def rand_read(fio_params, test_params):
+    fio_params["rw"] = "randread"
+    result = performance_test.runcustom(['', '', 'seq1', "params=%s" % json.dumps(fio_params)], test_params["logger"])
+
+    if hasattr(test_params["logger"], 'csv'):
+        test_params["logger"].csv(["rand_read", int(result["read_bw"]), int(result["read_iops"]),
+            int(result["read_lat"])])
+
+    if test_params["compare_result"] is not None:
+        compare_results(result, test_params["compare_result"], "rand_read")
         return result
 
     if int(result["read_bw"]) < 500000:
-        raise(Exception("rand_read bandwidth less than 500 MB/s"))
+        raise Exception("rand_read bandwidth less than 500 MB/s")
 
     if int(result["read_iops"]) < 150000:
-        raise(Exception("rand_read iops less than 150000 "))
+        raise Exception("rand_read iops less than 150000 ")
 
     if int(result["read_lat"]) > 10000:
-        raise(Exception("rand_read latency bigger than 10 us"))
+        raise Exception("rand_read latency bigger than 10 us")
 
     return result
 
 
-def seq_read(params, logger=testutils.DEFULT_LOGGER, compare=None):
-    params["rw"] = "read"
-    result = performance_test.runcustom(['', '', 'seq1', "params=%s" % json.dumps(params)], logger)
+def seq_read(fio_params, test_params):
+    fio_params["rw"] = "read"
+    result = performance_test.runcustom(['', '', 'seq1', "params=%s" % json.dumps(fio_params)], test_params["logger"])
 
-    if hasattr(logger, 'csv'):
-        logger.csv(["seq_read", int(result["read_bw"]), int(result["read_iops"]), int(result["read_lat"])])
+    if hasattr(test_params["logger"], 'csv'):
+        test_params["logger"].csv(["seq_read", int(result["read_bw"]), int(result["read_iops"]), int(result["read_lat"])])
 
-    if compare is not None:
-        compare_results(result, compare, "seq_read")
+    if test_params["compare_result"] is not None:
+        compare_results(result, test_params["compare_result"], "seq_read")
         return result
     
     if int(result["read_bw"]) < 500000:
-        raise(Exception("seq_read bandwidth less than 500 MB/s"))
+        raise Exception("seq_read bandwidth less than 500 MB/s")
     
     if int(result["read_iops"]) < 150000:
-        raise(Exception("seq_read iops less than 150000 "))
+        raise Exception("seq_read iops less than 150000 ")
     
     if int(result["read_lat"]) > 10000:
-        raise(Exception("seq_read bigger than 10 us"))
+        raise Exception("seq_read bigger than 10 us")
 
     return result
 
-def rand_write(params, logger=testutils.DEFULT_LOGGER, compare=None):
-    params["rw"] = "randwrite"
-    result = performance_test.runcustom(['', '', 'seq1', "params=%s" % json.dumps(params)], logger)
+def rand_write(fio_params, test_params):
+    fio_params["rw"] = "randwrite"
+    result = performance_test.runcustom(['', '', 'seq1', "params=%s" % json.dumps(fio_params)], test_params["logger"])
 
-    if hasattr(logger, 'csv'):
-        logger.csv(["rand_write","","","", int(result["write_bw"]), int(result["write_iops"]), int(result["write_lat"])])
+    if hasattr(test_params["logger"], 'csv'):
+        test_params["logger"].csv(["rand_write","","","", int(result["write_bw"]), int(result["write_iops"]), int(result["write_lat"])])
 
-    if compare is not None:
-        compare_results(result, compare, "rand_write")
+    if test_params["compare_result"] is not None:
+        compare_results(result, test_params["compare_result"], "rand_write")
         return result
 
     if int(result["write_bw"]) < 500000:
-        raise(Exception("rand_write bandwidth less than 500 MB/s"))
+        raise Exception("rand_write bandwidth less than 500 MB/s")
     
     if int(result["write_iops"]) < 130000:
-        raise(Exception("rand_write iops less than 130000 "))
+        raise Exception("rand_write iops less than 130000 ")
     
     if int(result["write_lat"]) > 10000:
-        raise(Exception("rand_write latency bigger than 10 us"))
+        raise Exception("rand_write latency bigger than 10 us")
 
     return result
 
-def seq_write(params, logger=testutils.DEFULT_LOGGER, compare=None):
-    params["rw"] = "write"
-    result = performance_test.runcustom(['', '', 'seq1', "params=%s" % json.dumps(params)], logger)
+def seq_write(fio_params, test_params):
+    fio_params["rw"] = "write"
+    result = performance_test.runcustom(['', '', 'seq1', "params=%s" % json.dumps(fio_params)], test_params["logger"])
 
-    if hasattr(logger, 'csv'):
-        logger.csv(["seq_write","","","", int(result["write_bw"]), int(result["write_iops"]), int(result["write_lat"])])
+    if hasattr(test_params["logger"], 'csv'):
+        test_params["logger"].csv(["seq_write","","","", int(result["write_bw"]), int(result["write_iops"]), int(result["write_lat"])])
 
-    if compare is not None:
-        compare_results(result, compare, "seq_write")
+    if test_params["compare_result"] is not None:
+        compare_results(result, test_params["compare_result"], "seq_write")
         return result
 
     if int(result["write_bw"]) < 500000:
-        raise(Exception("seq_write bandwidth less than 500 MB/s"))
+        raise Exception("seq_write bandwidth less than 500 MB/s")
     
     if int(result["write_iops"]) < 130000:
-        raise(Exception("seq_write iops less than 130000 "))
+        raise Exception("seq_write iops less than 130000 ")
     
     if int(result["write_lat"]) > 10000:
-        raise(Exception("seq_write latency bigger than 10 us"))
+        raise Exception("seq_write latency bigger than 10 us")
 
     return result
 
-def rand_R70_W30(params, logger=testutils.DEFULT_LOGGER, compare=None):
-    params["rw"] = "randrw"
-    params["rwmixread"] = "70"
-    params["rwmixwrite"] = "30"
-    result = performance_test.runcustom(['', '', 'seq1', "params=%s" % json.dumps(params)], logger)
+def rand_R70_W30(fio_params, test_params):
+    fio_params["rw"] = "randrw"
+    fio_params["rwmixread"] = "70"
+    fio_params["rwmixwrite"] = "30"
+    result = performance_test.runcustom(['', '', 'seq1', "params=%s" % json.dumps(fio_params)], test_params["logger"])
 
-    if hasattr(logger, 'csv'):
-        logger.csv(["rand_R70_W30", int(result["read_bw"]), int(result["read_iops"]), int(result["read_lat"]),
+    if hasattr(test_params["logger"], 'csv'):
+        test_params["logger"].csv(["rand_R70_W30", int(result["read_bw"]), int(result["read_iops"]), int(result["read_lat"]),
             int(result["write_bw"]), int(result["write_iops"]), int(result["write_lat"])])
 
-    if compare is not None:
-        compare_results(result, compare, "rand_R70_W30")
+    if test_params["compare_result"] is not None:
+        compare_results(result, test_params["compare_result"], "rand_R70_W30")
         return result
 
     if int(result["write_bw"]) < 150000:
-        raise(Exception("rand_R70_W30 write bandwidth less than 150 MB/s"))
+        raise Exception("rand_R70_W30 write bandwidth less than 150 MB/s")
     
     if int(result["write_iops"]) < 40000:
-        raise(Exception("rand_R70_W30 write iops less than 40000 "))
+        raise Exception("rand_R70_W30 write iops less than 40000 ")
     
     if int(result["write_lat"]) > 10000:
-        raise(Exception("rand_R70_W30 write latency bigger than 10 us"))
+        raise Exception("rand_R70_W30 write latency bigger than 10 us")
     
     if int(result["read_bw"]) < 400000:
-        raise(Exception("rand_R70_W30 read bandwidth less than 400 MB/s"))
+        raise Exception("rand_R70_W30 read bandwidth less than 400 MB/s")
     
     if int(result["read_iops"]) < 90000:
-        raise(Exception("rand_R70_W30 read iops less than 90000 "))
+        raise Exception("rand_R70_W30 read iops less than 90000 ")
     
     if int(result["read_lat"]) > 10000:
-        raise(Exception("rand_R70_W30 read latency bigger than 10 us"))
+        raise Exception("rand_R70_W30 read latency bigger than 10 us")
 
     return result
 
-def seq_R70_W30(params, logger=testutils.DEFULT_LOGGER, compare=None):
-    params["rw"] = "rw"
-    params["rwmixread"] = "70"
-    params["rwmixwrite"] = "30"
-    result = performance_test.runcustom(['', '', 'seq1', "params=%s" % json.dumps(params)], logger)
+def seq_R70_W30(fio_params, test_params):
+    fio_params["rw"] = "rw"
+    fio_params["rwmixread"] = "70"
+    fio_params["rwmixwrite"] = "30"
+    result = performance_test.runcustom(['', '', 'seq1', "params=%s" % json.dumps(fio_params)], test_params["logger"])
 
-    if hasattr(logger, 'csv'):
-        logger.csv(["seq_R70_W30", int(result["read_bw"]), int(result["read_iops"]), int(result["read_lat"]),
+    if hasattr(test_params["logger"], 'csv'):
+        test_params["logger"].csv(["seq_R70_W30", int(result["read_bw"]), int(result["read_iops"]), int(result["read_lat"]),
             int(result["write_bw"]), int(result["write_iops"]), int(result["write_lat"])])
 
-    if compare is not None:
-        compare_results(result, compare, "seq_R70_W30")
+    if test_params["compare_result"] is not None:
+        compare_results(result, test_params["compare_result"], "seq_R70_W30")
         return result
     
     if int(result["write_bw"]) < 150000:
-        raise(Exception("seq_R70_W30 write bandwidth less than 150 MB/s"))
+        raise Exception("seq_R70_W30 write bandwidth less than 150 MB/s")
     
     if int(result["write_iops"]) < 40000:
-        raise(Exception("seq_R70_W30 write iops less than 40000 "))
+        raise Exception("seq_R70_W30 write iops less than 40000 ")
     
     if int(result["write_lat"]) > 10000:
-        raise(Exception("seq_R70_W30 write latency bigger than 10 us"))
+        raise Exception("seq_R70_W30 write latency bigger than 10 us")
     
     if int(result["read_bw"]) < 400000:
-        raise(Exception("seq_R70_W30 read bandwidth less than 400 MB/s"))
+        raise Exception("seq_R70_W30 read bandwidth less than 400 MB/s")
     
     if int(result["read_iops"]) < 90000:
-        raise(Exception("seq_R70_W30 read iops less than 90000 "))
+        raise Exception("seq_R70_W30 read iops less than 90000 ")
     
     if int(result["read_lat"]) > 10000:
-        raise(Exception("seq_R70_W30 read latency bigger than 10 us"))
+        raise Exception("seq_R70_W30 read latency bigger than 10 us")
 
     return result
 
@@ -215,183 +216,217 @@ def thread_scaling_common(params, threads=1, logger=testutils.DEFULT_LOGGER):
         result["write_lat"] = ((int(many_threads_result["write_lat"]) - int(one_thread_result["write_lat"]))*100)//int(one_thread_result["write_lat"])
     return result
 
-def thread_rand_read_scaling3(params, logger=testutils.DEFULT_LOGGER, compare=None):
-    params["rw"] = "randread"
-    result = thread_scaling_common(params, 3, logger)
-    logger.debug("scale bw %d" % int(result["read_bw"]))
-    if hasattr(logger, 'csv'):
-        logger.csv(["thread_rand_read_scaling3", int(result["read_bw"]), int(result["read_iops"]), int(result["read_lat"])])
+def thread_rand_read_scaling3(fio_params, test_params):
+    fio_params["rw"] = "randread"
+    if test_params["scale_percents"]:
+        result = thread_scaling_common(fio_params, 3, test_params["logger"])
+    else:
+        fio_params["group_reporting"] = 1
+        fio_params["numjobs"] = 3
+        result = performance_test.runcustom(['', '', 'seq1', "params=%s" % json.dumps(fio_params)], logger)
 
-    if compare is not None:
-        compare_results(result, compare, "thread_rand_read_scaling3")
+    test_params["logger"].debug("scale bw %d" % int(result["read_bw"]))
+    if hasattr(test_params["logger"], 'csv'):
+        test_params["logger"].csv(["thread_rand_read_scaling3", int(result["read_bw"]), int(result["read_iops"]), int(result["read_lat"])])
+
+    if test_params["compare_result"] is not None:
+        compare_results(result, test_params["compare_result"], "thread_rand_read_scaling3")
         return result
 
     if int(result["read_bw"]) < 80:
-        raise(Exception("thread_rand_read_scaling3 read bandwidth less than 80%"))
+        raise Exception("thread_rand_read_scaling3 read bandwidth less than 80%")
     
-    logger.debug("scale iops %d" % int(result["read_iops"]))
+    test_params["logger"].debug("scale iops %d" % int(result["read_iops"]))
     if int(result["read_iops"]) < 80:
-        raise(Exception("thread_rand_read_scaling3 read iops less than 80%"))
+        raise Exception("thread_rand_read_scaling3 read iops less than 80%")
 
-    logger.debug("scale lat %d" % int(result["read_lat"]))
+    test_params["logger"].debug("scale lat %d" % int(result["read_lat"]))
     if int(result["read_lat"]) > 70:
-        raise(Exception("thread_rand_read_scaling3 read latency bigger than 80%"))
+        raise Exception("thread_rand_read_scaling3 read latency bigger than 80%")
 
     return result
 
-def thread_rand_read_scaling30(params, logger=testutils.DEFULT_LOGGER, compare=None):
-    params["rw"] = "randread"
-    result = thread_scaling_common(params, 30, logger)
-    logger.debug("scale bw %d" % int(result["read_bw"]))
-    if hasattr(logger, 'csv'):
-        logger.csv(["thread_rand_read_scaling30", int(result["read_bw"]), int(result["read_iops"]), int(result["read_lat"])])
+def thread_rand_read_scaling30(fio_params, test_params):
+    fio_params["rw"] = "randread"
+    if test_params["scale_percents"]:
+        result = thread_scaling_common(fio_params, 30, test_params["logger"])
+    else:
+        fio_params["group_reporting"] = 1
+        fio_params["numjobs"] = 30
+        result = performance_test.runcustom(['', '', 'seq1', "params=%s" % json.dumps(fio_params)], logger)
 
-    if compare is not None:
-        compare_results(result, compare, "thread_rand_read_scaling30")
+    test_params["logger"].debug("scale bw %d" % int(result["read_bw"]))
+    if hasattr(test_params["logger"], 'csv'):
+        test_params["logger"].csv(["thread_rand_read_scaling30", int(result["read_bw"]), int(result["read_iops"]), int(result["read_lat"])])
+
+    if test_params["compare_result"] is not None:
+        compare_results(result, test_params["compare_result"], "thread_rand_read_scaling30")
         return result
 
     if int(result["read_bw"]) < 180:
-        raise(Exception("thread_rand_read_scaling30 read bandwidth less than 180%"))
+        raise Exception("thread_rand_read_scaling30 read bandwidth less than 180%")
     
-    logger.debug("scale iops %d" % int(result["read_iops"]))
+    test_params["logger"].debug("scale iops %d" % int(result["read_iops"]))
     if int(result["read_iops"]) < 180:
-        raise(Exception("thread_rand_read_scaling30 read iops less than 180%"))
+        raise Exception("thread_rand_read_scaling30 read iops less than 180%")
 
-    logger.debug("scale lat %d" % int(result["read_lat"]))
+    test_params["logger"].debug("scale lat %d" % int(result["read_lat"]))
     if int(result["read_lat"]) > 900:
-        raise(Exception("thread_rand_read_scaling30 read latency bigger than 900%"))
+        raise Exception("thread_rand_read_scaling30 read latency bigger than 900%")
 
     return result
 
-def thread_rand_write_scaling3(params, logger=testutils.DEFULT_LOGGER, compare=None):
-    params["rw"] = "randwrite"
-    result = thread_scaling_common(params, 3, logger)
-    logger.debug("scale bw %d" % int(result["write_bw"]))
-    if hasattr(logger, 'csv'):
-        logger.csv(["thread_rand_write_scaling3", "","","", int(result["write_bw"]), int(result["write_iops"]), int(result["write_lat"])])
+def thread_rand_write_scaling3(fio_params, test_params):
+    fio_params["rw"] = "randwrite"
+    if test_params["scale_percents"]:
+        result = thread_scaling_common(fio_params, 3, test_params["logger"])
+    else:
+        fio_params["group_reporting"] = 1
+        fio_params["numjobs"] = 3
+        result = performance_test.runcustom(['', '', 'seq1', "params=%s" % json.dumps(fio_params)], logger)
 
-    if compare is not None:
-        compare_results(result, compare, "thread_rand_write_scaling3")
+    test_params["logger"].debug("scale bw %d" % int(result["write_bw"]))
+    if hasattr(test_params["logger"], 'csv'):
+        test_params["logger"].csv(["thread_rand_write_scaling3", "","","", int(result["write_bw"]), int(result["write_iops"]), int(result["write_lat"])])
+
+    if test_params["compare_result"] is not None:
+        compare_results(result, test_params["compare_result"], "thread_rand_write_scaling3")
         return result
 
     if int(result["write_bw"]) < 80:
-        raise(Exception("thread_rand_write_scaling3 write bandwidth less than 80%"))
+        raise Exception("thread_rand_write_scaling3 write bandwidth less than 80%")
     
-    logger.debug("scale iops %d" % int(result["write_iops"]))
+    test_params["logger"].debug("scale iops %d" % int(result["write_iops"]))
     if int(result["write_iops"]) < 80:
-        raise(Exception("thread_rand_write_scaling3 write iops less than 80%"))
+        raise Exception("thread_rand_write_scaling3 write iops less than 80%")
 
-    logger.debug("scale lat %d" % int(result["write_lat"]))
+    test_params["logger"].debug("scale lat %d" % int(result["write_lat"]))
     if int(result["write_lat"]) > 70:
-        raise(Exception("thread_rand_write_scaling3 write latency bigger than 80%"))
+        raise Exception("thread_rand_write_scaling3 write latency bigger than 80%")
 
     return result
 
-def thread_rand_write_scaling30(params, logger=testutils.DEFULT_LOGGER, compare=None):
-    params["rw"] = "randwrite"
-    result = thread_scaling_common(params, 30, logger)
-    logger.debug("scale bw %d" % int(result["write_bw"]))
-    if hasattr(logger, 'csv'):
-        logger.csv(["thread_rand_write_scaling30", "","","", int(result["write_bw"]), int(result["write_iops"]), int(result["write_lat"])])
+def thread_rand_write_scaling30(fio_params, test_params):
+    fio_params["rw"] = "randwrite"
+    if test_params["scale_percents"]:
+        result = thread_scaling_common(fio_params, 30, test_params["logger"])
+    else:
+        fio_params["group_reporting"] = 1
+        fio_params["numjobs"] = 30
+        result = performance_test.runcustom(['', '', 'seq1', "params=%s" % json.dumps(fio_params)], logger)
 
-    if compare is not None:
-        compare_results(result, compare, "thread_rand_write_scaling30")
+    test_params["logger"].debug("scale bw %d" % int(result["write_bw"]))
+    if hasattr(test_params["logger"], 'csv'):
+        test_params["logger"].csv(["thread_rand_write_scaling30", "","","", int(result["write_bw"]), int(result["write_iops"]), int(result["write_lat"])])
+
+    if test_params["compare_result"] is not None:
+        compare_results(result, test_params["compare_result"], "thread_rand_write_scaling30")
         return result
 
     if int(result["write_bw"]) < 80:
-        raise(Exception("thread_rand_write_scaling30 write bandwidth less than 80%"))
+        raise Exception("thread_rand_write_scaling30 write bandwidth less than 80%")
     
-    logger.debug("scale iops %d" % int(result["write_iops"]))
+    test_params["logger"].debug("scale iops %d" % int(result["write_iops"]))
     if int(result["write_iops"]) < 80:
-        raise(Exception("thread_rand_write_scaling30 write iops less than 80%"))
+        raise Exception("thread_rand_write_scaling30 write iops less than 80%")
 
-    logger.debug("scale lat %d" % int(result["write_lat"]))
+    test_params["logger"].debug("scale lat %d" % int(result["write_lat"]))
     if int(result["write_lat"]) > 70:
-        raise(Exception("thread_rand_write_scaling30 write latency bigger than 80%"))
+        raise Exception("thread_rand_write_scaling30 write latency bigger than 80%")
 
     return result
 
-def thread_rand_R70_W30_scaling3(params, logger=testutils.DEFULT_LOGGER, compare=None):
-    params["rw"] = "randrw"
-    params["rwmixread"] = "70"
-    params["rwmixwrite"] = "30"
-    result = thread_scaling_common(params, 3, logger)
-    logger.debug("scale read bw %d write bw %d" % (int(result["write_bw"]), int(result["write_bw"])))
-    if hasattr(logger, 'csv'):
-        logger.csv(["thread_rand_R70_W30_scaling3", int(result["read_bw"]), int(result["read_iops"]), int(result["read_lat"]),
+def thread_rand_R70_W30_scaling3(fio_params, test_params):
+    fio_params["rw"] = "randrw"
+    fio_params["rwmixread"] = "70"
+    fio_params["rwmixwrite"] = "30"
+    result = thread_scaling_common(fio_params, 3, test_params["logger"])
+    if test_params["scale_percents"]:
+        result = thread_scaling_common(fio_params, 3, test_params["logger"])
+    else:
+        fio_params["group_reporting"] = 1
+        fio_params["numjobs"] = 3
+        result = performance_test.runcustom(['', '', 'seq1', "params=%s" % json.dumps(fio_params)], logger)
+
+    test_params["logger"].debug("scale read bw %d write bw %d" % (int(result["write_bw"]), int(result["write_bw"])))
+    if hasattr(test_params["logger"], 'csv'):
+        test_params["logger"].csv(["thread_rand_R70_W30_scaling3", int(result["read_bw"]), int(result["read_iops"]), int(result["read_lat"]),
             int(result["write_bw"]), int(result["write_iops"]), int(result["write_lat"])])
 
-    if compare is not None:
-        compare_results(result, compare, "thread_rand_R70_W30_scaling3")
+    if test_params["compare_result"] is not None:
+        compare_results(result, test_params["compare_result"], "thread_rand_R70_W30_scaling3")
         return result
 
     if int(result["read_bw"]) < 80:
-        raise(Exception("thread_rand_R70_W30_scaling3 read bandwidth less than 80%"))
+        raise Exception("thread_rand_R70_W30_scaling3 read bandwidth less than 80%")
     
-    logger.debug("scale iops %d" % int(result["read_iops"]))
+    test_params["logger"].debug("scale iops %d" % int(result["read_iops"]))
     if int(result["write_iops"]) < 80:
-        raise(Exception("thread_rand_R70_W30_scaling3 read iops less than 80%"))
+        raise Exception("thread_rand_R70_W30_scaling3 read iops less than 80%")
 
-    logger.debug("scale lat %d" % int(result["read_lat"]))
+    test_params["logger"].debug("scale lat %d" % int(result["read_lat"]))
     if int(result["write_lat"]) > 70:
-        raise(Exception("thread_rand_R70_W30_scaling3 read latency bigger than 80%"))
+        raise Exception("thread_rand_R70_W30_scaling3 read latency bigger than 80%")
 
     if int(result["write_bw"]) < 80:
-        raise(Exception("thread_rand_R70_W30_scaling3 write bandwidth less than 80%"))
+        raise Exception("thread_rand_R70_W30_scaling3 write bandwidth less than 80%")
     
-    logger.debug("scale iops %d" % int(result["write_iops"]))
+    test_params["logger"].debug("scale iops %d" % int(result["write_iops"]))
     if int(result["write_iops"]) < 80:
-        raise(Exception("thread_rand_R70_W30_scaling3 write iops less than 80%"))
+        raise Exception("thread_rand_R70_W30_scaling3 write iops less than 80%")
 
-    logger.debug("scale lat %d" % int(result["write_lat"]))
+    test_params["logger"].debug("scale lat %d" % int(result["write_lat"]))
     if int(result["write_lat"]) > 70:
-        raise(Exception("thread_rand_R70_W30_scaling3 write latency bigger than 80%"))
+        raise Exception("thread_rand_R70_W30_scaling3 write latency bigger than 80%")
 
     return result
 
-def thread_rand_R70_W30_scaling30(params, logger=testutils.DEFULT_LOGGER, compare=None):
-    params["rw"] = "randrw"
-    params["rwmixread"] = "70"
-    params["rwmixwrite"] = "30"
-    result = thread_scaling_common(params, 30, logger)
-    logger.debug("scale read bw %d write bw %d" % (int(result["write_bw"]), int(result["write_bw"])))
-    if hasattr(logger, 'csv'):
-        logger.csv(["thread_rand_R70_W30_scaling30", int(result["read_bw"]), int(result["read_iops"]), int(result["read_lat"]),
+def thread_rand_R70_W30_scaling30(fio_params, test_params):
+    fio_params["rw"] = "randrw"
+    fio_params["rwmixread"] = "70"
+    fio_params["rwmixwrite"] = "30"
+    if test_params["scale_percents"]:
+        result = thread_scaling_common(fio_params, 30, test_params["logger"])
+    else:
+        fio_params["group_reporting"] = 1
+        fio_params["numjobs"] = 30
+        result = performance_test.runcustom(['', '', 'seq1', "params=%s" % json.dumps(fio_params)], logger)
+
+    test_params["logger"].debug("scale read bw %d write bw %d" % (int(result["write_bw"]), int(result["write_bw"])))
+    if hasattr(test_params["logger"], 'csv'):
+        test_params["logger"].csv(["thread_rand_R70_W30_scaling30", int(result["read_bw"]), int(result["read_iops"]), int(result["read_lat"]),
             int(result["write_bw"]), int(result["write_iops"]), int(result["write_lat"])])
 
-    if compare is not None:
-        compare_results(result, compare, "thread_rand_R70_W30_scaling30")
+    if test_params["compare_result"] is not None:
+        compare_results(result, test_params["compare_result"], "thread_rand_R70_W30_scaling30")
         return result
 
     if int(result["read_bw"]) < 80:
-        raise(Exception("thread_rand_R70_W30_scaling30 read bandwidth less than 80%"))
+        raise Exception("thread_rand_R70_W30_scaling30 read bandwidth less than 80%")
     
-    logger.debug("scale iops %d" % int(result["read_iops"]))
+    test_params["logger"].debug("scale iops %d" % int(result["read_iops"]))
     if int(result["write_iops"]) < 80:
-        raise(Exception("thread_rand_R70_W30_scaling30 read iops less than 80%"))
+        raise Exception("thread_rand_R70_W30_scaling30 read iops less than 80%")
 
-    logger.debug("scale lat %d" % int(result["read_lat"]))
+    test_params["logger"].debug("scale lat %d" % int(result["read_lat"]))
     if int(result["write_lat"]) > 70:
-        raise(Exception("thread_rand_R70_W30_scaling30 read latency bigger than 80%"))
+        raise Exception("thread_rand_R70_W30_scaling30 read latency bigger than 80%")
 
     if int(result["write_bw"]) < 80:
-        raise(Exception("thread_rand_R70_W30_scaling30 write bandwidth less than 80%"))
+        raise Exception("thread_rand_R70_W30_scaling30 write bandwidth less than 80%")
     
-    logger.debug("scale iops %d" % int(result["write_iops"]))
+    test_params["logger"].debug("scale iops %d" % int(result["write_iops"]))
     if int(result["write_iops"]) < 80:
-        raise(Exception("thread_rand_R70_W30_scaling30 write iops less than 80%"))
+        raise Exception("thread_rand_R70_W30_scaling30 write iops less than 80%")
 
-    logger.debug("scale lat %d" % int(result["write_lat"]))
+    test_params["logger"].debug("scale lat %d" % int(result["write_lat"]))
     if int(result["write_lat"]) > 70:
-        raise(Exception("thread_rand_R70_W30_scaling30 write latency bigger than 80%"))
+        raise Exception("thread_rand_R70_W30_scaling30 write latency bigger than 80%")
 
     return result
 
 
-def main(filename, logger, nofail, compare_result):
-    common_params = json.loads('{"filename":"%s", "size":"4GB", "runtime":"5", "time_based":"1", "direct":"1", \
-        "ioengine":"libaio", "bs":"4k", "numjobs":"1"}' % filename)
-    
+def main(filename, logger, nofail, compare_result, scale_percents):
     test_suite = [
         rand_read,
         seq_read,
@@ -407,12 +442,20 @@ def main(filename, logger, nofail, compare_result):
         thread_rand_R70_W30_scaling30,
     ]
 
+    fio_params = json.loads('{"filename":"%s", "size":"4GB", "runtime":"5", "time_based":"1", "direct":"1", \
+        "ioengine":"libaio", "bs":"4k", "numjobs":"1"}' % filename)
+    
+    test_params = dict()
+    test_params["logger"] = logger
+    test_params["scale_percents"] = scale_percents
+
     if hasattr(logger, 'csv'):
         logger.csv(["Test Name", "read bw KiB/s", "read iops", "read lat ns", "write bw KiB/s", "write iops", "write lat ns"])
 
     for test in test_suite:
         try:
-            result = test(common_params, logger, compare_result[test.__name__] if test.__name__ in compare_result else None)
+            test_params["compare_result"] = compare_result[test.__name__] if test.__name__ in compare_result else None
+            test(fio_params, test_params)
             logger.info("test %s passed" % test.__name__)
         except Exception as e:
             err = "test %s failed reason %s" % (test.__name__, str(e))
@@ -420,6 +463,7 @@ def main(filename, logger, nofail, compare_result):
                 logger.error(err)
             else:
                 raise Exception(err)
+
 
 def get_percentage(val, percents):
     return (int(val) * int(percents))//100
@@ -434,6 +478,7 @@ if __name__ == "__main__":
     parser.add_argument('-l', dest='log_level', action='store', type=int, default=5, choices=range(0, 8), help='Log level CRITICAL: 0, FATAL: 1, ERROR: 2, WARNING: 3, WARN: 4, INFO: 5, DEBUG: 6, NOTSET: 7 by default 5')
     parser.add_argument('-c', dest='compare_file_path', action='store', type=str, default=None, help='compare file path. File with what we will compare results')
     parser.add_argument('-w', dest='compare_percents', action='store', type=int, default=10, choices=range(0, 100), help='compare divergence in 0-100 percents how much can result be different from compare file default 10')
+    parser.add_argument('-s', dest='scale_percents', action='store_true', default=False, help='Scaling test results in percents')
     args = parser.parse_args()
     logger = testutils.setup_log(args.log_type, args.log_level, args.log_file_path)
     compare_result = dict()
@@ -470,6 +515,6 @@ if __name__ == "__main__":
             sys.exit(1)
 
     try:
-        main(args.dev, logger, args.nofail, compare_result)
+        main(args.dev, logger, args.nofail, compare_result, args.scale_percents)
     except Exception as e:
         logger.error("Testing failed %s" % str(e))
